@@ -57,11 +57,9 @@ def create_user_info(**kwargs):
         session.commit()
         session.refresh(result)
         session.close()
-        return result.user_id
+        return User.from_orm(result)
     except Exception as e:
         return e
-    finally:
-        session.close()
 
 
 def get_user_info(user_id: str):

@@ -7,16 +7,14 @@ class User(SQLModel, table=True):
     name: str
     passport: str
     telegram_id: str
-    phone_number: str
     telegram_number: str
     contract_number: str
     telegram_name: str
     username: str
     file_id: str
     faculty: str
-    group: str
-    created_date: datetime = Field(default=datetime.now().strftime("%Y-%m-%d"), index=True)
-    created_time: datetime = Field(default=datetime.now().strftime("%H:%M:%S"), index=True)
+    created_date: str = Field(default=datetime.now().strftime("%Y-%m-%d"))
+    created_time: str = Field(default=datetime.now().strftime("%H:%M:%S"))
 
 
 class FileChunk(SQLModel, table=True):

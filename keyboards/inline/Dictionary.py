@@ -214,7 +214,7 @@ async def inline_tumanlar(viloyat):
         region = Namangan
     elif viloyat == "Andijon":
         region = Andijon
-    elif viloyat == "Farg'ona":
+    elif viloyat == "Fargona":
         region = Fargona
     elif viloyat == "Qashqadaryo":
         region = Qashqadaryo
