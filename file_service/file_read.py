@@ -20,6 +20,14 @@ async def replace_text(paragraph, old_text, new_text, font_size=None, bold=True,
                 run.font.underline = True
 
 
+async def add_qrcode_pcture(paragraph, old_text, new_text, size=1.6):
+    for run in paragraph.runs:
+        print(run.text)
+        if old_text in run.text:
+            run.add_picture(join(dirname(__file__), f"ariza_qrcode/{new_text}.png"),
+                            width=Inches(size))
+
+
 async def replace_table_text(table, old_text, new_text, font_size=None, bold=True, size=1.6):
     for row in table.rows:
         for cell in row.cells:
@@ -46,14 +54,17 @@ async def process_document(address, name):
             await replace_text(paragraph, "NAME", name)
         if "DATEFULL" in paragraph.text:
             await replace_text(paragraph, "DATEFULL", f"{datetime.now().strftime('%d.%m.%Y')}    {name}")
-        doc.save(join(dirname(__file__), f"file_ariza\\{name}.docx"))
+        if "&" in paragraph.text:
+            await add_qrcode_pcture(paragraph, "&", new_text=f"{name}", size=1.6)
+    doc.save(join(dirname(__file__), f"file_ariza\\{name}.docx"))
+    await convert_pdf(name=name, status=True)
 
 
-async def process_contract(name, faculty, passport, number, address):
-    doc = Document(join(dirname(__file__), "cotract.docx"))
+async def process_contract(name, faculty, passport, number, address, contract_number):
+    doc = Document(join(dirname(__file__), 'shartnoma_shablon.docx'))
     for paragraph in doc.paragraphs:
         if "SONLI1" in paragraph.text:
-            await replace_text(paragraph, "SONLI1", f"0001")
+            await replace_text(paragraph, "SONLI1", contract_number)
         if "DATE" in paragraph.text:
             await replace_text(paragraph, "DATE", f"{datetime.now().strftime('%d.%m.')}", bold=False)
         if "NAME" in paragraph.text:
@@ -73,9 +84,10 @@ async def process_contract(name, faculty, passport, number, address):
         await replace_table_text(table=table, old_text="ADDRES", new_text=address, font_size=12)
         await replace_table_text(table=table, old_text="&", new_text=name, bold=False)
     doc.save(join(dirname(__file__), f"file_shartnoma\\{name}.docx"))
+    await convert_pdf(name)
 
 
-async def func_qrcode(url, name):
+async def func_qrcode(url, name, status: bool = False):
     qr = QRCode(
         version=1,
         error_correction=constants.ERROR_CORRECT_L,
@@ -88,4 +100,43 @@ async def func_qrcode(url, name):
 
     img = qr.make_image(fill_color="black", back_color="white")
 
-    return img.save(join(dirname(__file__), f"file_qrcode/{name}.png"))
+    return img.save(join(dirname(__file__), f"file_qrcode/{name}.png" if status else f"ariza_qrcode/{name}.png"))
+
+
+async def convert_pdf(name, status: bool = False):
+    directory = "file_ariza" if status else "file_shartnoma"
+    source_path = join(dirname(__file__), f"{directory}\\{name}.docx")
+    target_path = join(dirname(__file__), f"{directory}\\{name}.pdf")
+    convert(source_path, target_path)
+    remove(source_path) if exists(source_path) else None
+
+# from PyPDF2 import PdfReader, PdfWriter
+# import datetime
+#
+#
+# def sign_pdf(input_pdf_path, output_pdf_path, signer_name):
+#     # PDF faylini yuklash
+#     with open(input_pdf_path, 'rb') as input_pdf_file:
+#         reader = PdfReader(input_pdf_file)
+#         writer = PdfWriter()
+#
+#         # Barcha sahifalarni nusxa olish
+#         for page in reader.pages:
+#             writer.add_page(page)
+#
+#         # Imzo qismi yaratish
+#         signer_block = f"Signed by: {signer_name}\nDate: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+#         # Imzo qismini PDF-ga qo'shish
+#         writer.add_text(50, 50, signer_block, fontname='Helvetica', fontsize=12)
+#
+#         # Imzo qilingan PDF-ni yaratish
+#         with open(output_pdf_path, 'wb') as output_pdf_file:
+#             writer.write(output_pdf_file)
+#
+#
+# # Imzo qilingan PDF faylini yaratish
+# input_pdf_path = 'input.pdf'
+# output_pdf_path = 'output_signed.pdf'
+# signer_name = 'John Doe'
+#
+# sign_pdf(input_pdf_path, output_pdf_path, signer_name)

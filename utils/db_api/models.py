@@ -9,10 +9,14 @@ class User(SQLModel, table=True):
     telegram_id: str
     telegram_number: str
     contract_number: str
+    telegram_file_id: str
+    telegram_ariza_id: str
     telegram_name: str
     username: str
+    ariza_id: str
     file_id: str
     faculty: str
+    group: str
     created_date: str = Field(default=datetime.now().strftime("%Y-%m-%d"))
     created_time: str = Field(default=datetime.now().strftime("%H:%M:%S"))
 

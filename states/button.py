@@ -11,3 +11,5 @@ class Learning(StatesGroup):
     six = State()
     seven = State()
     eight = State()
+    nine = State()
+    ten = State()
