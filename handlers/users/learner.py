@@ -23,26 +23,39 @@ list_ = ["Maktabgacha ta’lim tashkiloti tarbiyachisi", "Maktabgacha ta’lim t
          "Maktabgacha ta’lim tashkiloti oshpazi"]
 
 
+@dp.message_handler(commands=['start'])
+async def exit_system(message: types.Message, state: FSMContext):
+    await state.reset_state(with_data=True)  # Holatni tozalash
+    await message.answer("Xizmat turini tanlang", reply_markup=choose_visitor)
+
+
 @dp.callback_query_handler(lambda call: call.data == "registration", state='*')
 async def answer_regitration(call: types.CallbackQuery):
+    print(call.data)
     logging.info(f"{call.from_user.full_name} {call.data}")
     await call.message.answer("Telegram raqamingizni yuboring.", reply_markup=keyboard)
     await Learning.zero.set()
 
 
-@dp.message_handler(content_types=types.ContentTypes.CONTACT, state=Learning.zero)
+@dp.message_handler(content_types=types.ContentTypes.ANY, state=Learning.zero)
 async def answer_contact(message: types.Message, state: FSMContext):
-    logging.info(f"{message.from_user.full_name} {message.contact.phone_number}")
-    await state.update_data({"Contact": message.contact.phone_number})
-    await message.answer("Familiya, Ism va Sharifingizni kiriting.")
-    await Learning.next()
+    print(message.text, '------------------')
+    if message.text == '/start':
+        await exit_system(message, state)
+    else:
+        logging.info(f"{message.from_user.full_name} {message.contact.phone_number}")
+        await state.update_data({"Contact": message.contact.phone_number})
+        await message.answer("Familiya, Ism va Sharifingizni kiriting.")
+        await Learning.next()
 
 
 @dp.message_handler(content_types=types.ContentTypes.TEXT, state=Learning.one)
 async def answer_name(message: types.Message, state: FSMContext):
     logging.info(f"{message.from_user.full_name} {message.text}")
     await message.delete()
-    if re.match(r"^[A-Za-z\s']+$", message.text):
+    if message.text.startswith("/start"):
+        await exit_system(message, state)
+    elif re.match(r"^[A-Za-z\s']+$", message.text):
         await state.update_data({"Name": message.text})
         await message.answer("Passportingiz seria va raqamini kiriting!", reply_markup=seria_keyboard)
         await Learning.next()
@@ -120,7 +133,7 @@ async def answer_five(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
     data = await state.get_data()
     data1 = (
-        f"Quyidagi kiritgan ma'lumotlaringiz to'g'ri ekanligini tasdiqlaysizmi?\nF. I. SH: {data.get('Name')}\nPassport: {data.get('passport')}\nViloyat: {data.get('region')}\nTuman: "
+        f"Quyidagi kiritgan ma'lumotlaringiz to'g'ri ekanligini tasdiqlaysizmi?\nF. I. SH: {data.get('Name')}\nPassport: <b>{data.get('passport')}</b>\nViloyat: {data.get('region')}\nTuman: "
         f"{data.get('tuman')}\nYonalish: {list_[int(data.get('yonalish')[7])]}")
     await call.message.answer(text=data1, reply_markup=response_keyboard)
     await Learning.next()
@@ -164,20 +177,26 @@ async def answer_choose(call: types.CallbackQuery, state: FSMContext):
 
 
 @dp.message_handler(content_types=types.ContentTypes.TEXT, state=Learning.nine)
-async def answer_contract(message: types.Message, state: FSMContext):
+async def answer_passport_seria(message: types.Message, state: FSMContext):
     logging.info(f"{message.from_user.full_name} {message.text}")
     data = await state.get_data()
     print(data)
-    if data.get('passport') == message.text:
-        await message.answer("Shartnoma rasmiylashtirilmoqda. Biroz kuting.")
-        await create_func(data, message)
-        await message.answer(
-            "✅ Shartnoma muvaffaqiyatli rasmiylashtirildi. Sizni ushbu kursda ko'rganimizdan mamnunmiz!!! Guruh shaklanishi bilan sizga ushbu bot orqali guruh linki yuboriladi.",
-            reply_markup=choose_visitor)
-        await state.reset_state(with_data=True)
+    info = message.text.upper().strip()
+    print(info.strip())
+    if len(info) == 9 and info[:2].isalpha() and info[2:].isdigit():
+        if data.get('passport') == message.text:
+            await message.answer("Shartnoma rasmiylashtirilmoqda. Biroz kuting.")
+            await create_func(data, message)
+            await message.answer(
+                "✅ Shartnoma muvaffaqiyatli rasmiylashtirildi. Sizni ushbu kursda ko'rganimizdan mamnunmiz!!! Guruh shaklanishi bilan sizga ushbu bot orqali guruh linki yuboriladi.",
+                reply_markup=choose_visitor)
+            await state.reset_state(with_data=True)
+        else:
+            await message.answer("Passportingiz noto'g'ri kiritildi. Iltimos qaytadan urinib ko'ring!")
+            await Learning.nine.set()
     else:
-        await message.answer("Passportingiz noto'g'ri kiritildi. Iltimos qaytadan urinib ko'ring!")
-        await Learning.eight.set()
+        await message.answer("Ruxsat etilmagan belgilardan foydalandingiz. Iltimos qaytadan pasport seria va raqamni kiriting!")
+        await Learning.nine.set()
 
 
 async def create_func(data, message):
