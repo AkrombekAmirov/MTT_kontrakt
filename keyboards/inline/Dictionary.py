@@ -20,7 +20,7 @@ Toshkent_viloyat = [
 Toshkent_shahri = [
     "Bektemir tumani",
     "Chilonzor tumani",
-    "Hamza tumani",
+    "Yashnaobod tumani",
     "Mirobod tumani",
     "Mirzo Ulugʻbek tumani",
     "Sergeli tumani",
@@ -86,6 +86,7 @@ Navoiy = [
     "Qiziltepa tumani",
     "Xatirchi tumani",
     "Navbahor tumani",
+    "Navoiy shahri",
     "Nurota tumani",
     "Tomdi tumani",
     "Uchquduq tumani"
@@ -227,6 +228,7 @@ Qoraqalpogiston = [
     "Kegeyli tumani",
     "Moʻynoq tumani",
     "Nukus tumani",
+    "Nukus shahri",
     "Qanlikoʻl tumani",
     "Qoʻngʻirot tumani",
     "Qoraoʻzak tumani",
@@ -239,7 +241,7 @@ Qoraqalpogiston = [
 ]
 
 list_tuman = ["Amudaryo tumani", "Beruniy tumani", "Chimboy tumani", "Ellikqalʼa tumani", "Kegeyli tumani",
-              "Moʻynoq tumani", "Nukus tumani", "Qanlikoʻl tumani", "Qoʻngʻirot tumani", "Qoraoʻzak tumani",
+              "Moʻynoq tumani", "Nukus tumani", "Nukus shahri", "Qanlikoʻl tumani", "Qoʻngʻirot tumani", "Qoraoʻzak tumani",
               "Shumanay tumani", "Taxtakoʻpir tumani", "Toʻrtkoʻl tumani", "Xoʻjayli tumani", "Taxiatosh tumani",
               "Boʻzatov tumani", "Oqoltin tumani", "Boyovut tumani", "Guliston tumani", "Xovos tumani",
               "Mirzaobod tumani", "Sayxunobod tumani", "Sardoba tumani", "Sirdaryo tumani", "Yangiyer shahri",
@@ -266,14 +268,14 @@ list_tuman = ["Amudaryo tumani", "Beruniy tumani", "Chimboy tumani", "Ellikqalʼ
               "Shofirkon tumani", "Vobkent tumani", "Andijon tuman", "Asaka tumani", "Baliqchi tumani", "Bo'stontuman",
               "Buloqboshi tumani", "Izboskan tuman", "Jalaquduq tuman", "Xoʻjaobod tumani", "Qoʻrgʻontepa tumani",
               "Marhamat tumani", "Oltinkoʻl tuman", "Paxtaobod tumani", "Shahrixon tuman", "Ulugʻnor tuman",
-              "Bektemir tumani", "Chilonzor tumani", "Hamza tumani", "Mirobod tumani", "Mirzo Ulugʻbek tumani",
+              "Bektemir tumani", "Chilonzor tumani", "Yashnaobod tumani", "Mirobod tumani", "Mirzo Ulugʻbek tumani",
               "Sergeli tumani", "Shayxontohur tumani", "Olmazor tumani", "Uchtepa (Toshkent)", "Yakkasaroy tumani",
               "Yunusobod tumani", "Yangihayot tumani", "Bulungʻur tumani", "Ishtixon tumani", "Jomboy tumani",
               "Kattaqoʻrgʻon tumani", "Qoʻshrabot tumani", "Narpay tumani", "Nurobod tumani", "Oqdaryo tumani",
               "Paxtachi tumani", "Payariq tumani", "Pastdargʻom tumani", "Samarqand tumani", "Toyloq tumani",
               "Urgut tumani", "Bekobod tumani", "Boʻstonliq tumani", "Boʻka tumani", "Chinoz tumani", "Qibray tumani",
               "Ohangaron tumani", "Oqqoʻrgʻon tumani", "Parkent tumani", "Piskent tumani", "Quyi chirchiq tumani",
-              "Oʻrta Chirchiq tumani", "Yangiyoʻl tumani", "Yuqori Chirchiq tumani", "Zangiota tumani"
+              "Oʻrta Chirchiq tumani", "Yangiyoʻl tumani", "Yuqori Chirchiq tumani", "Zangiota tumani", "Navoiy shahri",
               ]
 
 

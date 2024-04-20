@@ -38,7 +38,6 @@ setup(
         "pypng==0.20220715.0",
         "python-dotenv==0.21.1",
         "pytz==2024.1",
-        "pywin32==306",
         "pyzbar==0.1.9",
         "qrcode==7.4.2",
         "sniffio==1.3.1",
