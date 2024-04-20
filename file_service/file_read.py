@@ -1,6 +1,8 @@
 from os.path import join, dirname, exists
 from qrcode import QRCode, constants
+from .file_path import get_file_path
 from docx.shared import Inches, Pt
+from openpyxl import load_workbook
 from os.path import join, dirname
 from datetime import datetime
 from docx2pdf import convert
@@ -109,6 +111,19 @@ async def convert_pdf(name, status: bool = False):
     target_path = join(dirname(__file__), f"{directory}\\{name}.pdf")
     convert(source_path, target_path)
     remove(source_path) if exists(source_path) else None
+
+
+async def write_qabul(data):
+    try:
+        path = await get_file_path("qabul.xlsx")
+        workbook = load_workbook(path)
+        sheet = workbook.active
+        for row in data:
+            sheet.append(row)
+        workbook.save(path)
+        return True
+    except Exception as e:
+        return False
 
 # from PyPDF2 import PdfReader, PdfWriter
 # import datetime
