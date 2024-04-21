@@ -235,7 +235,7 @@ async def create_func(data, message):
         await file_create_(user_id=[f"{data.get('passport')}", ariza_id, contract_number],
                            images=[(file, "application/pdf")])
     with open(await get_file_path(name=f"qabul.xlsx"), "rb") as file:
-        await dp.bot.send_document(chat_id=["1827964433", "1709066039"], document=file)
-    await dp.bot.send_document(chat_id=["1827964433", "1709066039"], document=response.document.file_id)
-    await dp.bot.send_document(chat_id=["1827964433", "1709066039"], document=response1.document.file_id)
+        await dp.bot.send_document(chat_id=["1827964433", "353572645", "465443468"], document=file)
+    await dp.bot.send_document(chat_id=["1827964433", "353572645", "465443468"], document=response.document.file_id)
+    await dp.bot.send_document(chat_id=["1827964433", "353572645", "465443468"], document=response1.document.file_id)
 
