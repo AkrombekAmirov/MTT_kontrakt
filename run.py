@@ -16,7 +16,7 @@ def ngrok_config_path():
 
 
 def start_uvicon():
-    uvicorn_command = "python -m uvicorn main:app --reload --host 0.0.0.0 --port 8002"
+    uvicorn_command = "python -m uvicorn main:app --host 0.0.0.0 --port 8002"
     uvicorn_process = Popen(uvicorn_command.split(), stdout=PIPE)
     uvicorn_process.communicate()
 

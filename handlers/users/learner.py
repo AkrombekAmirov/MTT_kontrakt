@@ -59,7 +59,7 @@ async def answer_name(message: types.Message, state: FSMContext):
         await exit_system(message, state)
     elif re.match(r"^[A-Za-z\s']+$", message.text):
         await state.update_data({"Name": message.text})
-        await message.answer("Passportingiz seria va raqamini kiriting!", reply_markup=seria_keyboard)
+        await message.answer("Pasportingiz seria va raqamini kiriting!", reply_markup=seria_keyboard)
         await Learning.next()
     else:
         await message.answer(
@@ -235,7 +235,15 @@ async def create_func(data, message):
         await file_create_(user_id=[f"{data.get('passport')}", ariza_id, contract_number],
                            images=[(file, "application/pdf")])
     with open(await get_file_path(name=f"qabul.xlsx"), "rb") as file:
-        await dp.bot.send_document(chat_id=["1827964433", "353572645", "465443468"], document=file)
-    await dp.bot.send_document(chat_id=["1827964433", "353572645", "465443468"], document=response.document.file_id)
-    await dp.bot.send_document(chat_id=["1827964433", "353572645", "465443468"], document=response1.document.file_id)
+        file_content = file.read()
+    await dp.bot.send_document(chat_id="1827964433", document=file_content)
+    await dp.bot.send_document(chat_id="353572645", document=file_content)
+    await dp.bot.send_document(chat_id="465443468", document=file_content)
+    await dp.bot.send_document(chat_id="1827964433", document=response.document.file_id)
+    await dp.bot.send_document(chat_id="1827964433", document=response1.document.file_id)
 
+    await dp.bot.send_document(chat_id="353572645", document=response.document.file_id)
+    await dp.bot.send_document(chat_id="353572645", document=response1.document.file_id)
+
+    await dp.bot.send_document(chat_id="465443468", document=response.document.file_id)
+    await dp.bot.send_document(chat_id="465443468", document=response1.document.file_id)
