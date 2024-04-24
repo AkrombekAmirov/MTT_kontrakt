@@ -1,8 +1,6 @@
-from keyboards.inline import keyboard, choose_visitor
 from aiogram.dispatcher.filters.builtin import CommandStart
-from aiogram.types import Message, ContentType
-from aiogram.dispatcher import FSMContext
-from data.config import ADMIN, ADMIN1
+from keyboards.inline import choose_visitor
+from aiogram.types import Message
 from loader import dp
 
 
