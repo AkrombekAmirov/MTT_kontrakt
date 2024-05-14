@@ -247,3 +247,6 @@ async def create_func(data, message):
 
     await dp.bot.send_document(chat_id=ADMINS, document=response.document.file_id)
     await dp.bot.send_document(chat_id=ADMINS, document=response1.document.file_id)
+
+    await dp.bot.send_message(chat_id=ADMIN_M1, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
+    await dp.bot.send_message(chat_id=ADMIN_M2, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
