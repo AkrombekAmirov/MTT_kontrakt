@@ -1,6 +1,7 @@
 from keyboards.inline import keyboard, yonalish_nomi_keyboard, response_keyboard, uzbekistan_viloyatlar, choose_visitor, \
     choose_contract_, seria_keyboard, number_keyboard, list_regioin, list_tuman, list_region1
 from file_service.file_read import process_document, process_contract, func_qrcode, write_qabul
+from data.config import ADMINS, ADMIN_M1, ADMIN_M2
 from file_service.file_path import get_file_path
 from keyboards.inline import inline_tumanlar
 from aiogram.dispatcher import FSMContext
@@ -12,7 +13,6 @@ from uuid import uuid4
 from loader import dp
 import logging
 import re
-from os.path import join, dirname
 
 logging.basicConfig(filename='bot.log', filemode='w', level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -234,16 +234,20 @@ async def create_func(data, message):
     with open(await get_file_path(name=f"file_ariza\\{data.get('Name')}.pdf"), "rb") as file:
         await file_create_(user_id=[f"{data.get('passport')}", ariza_id, contract_number],
                            images=[(file, "application/pdf")])
-    with open(await get_file_path(name=f"qabul.xlsx"), "rb") as file:
-        file_content = file.read()
-    await dp.bot.send_document(chat_id="1827964433", document=file_content)
-    await dp.bot.send_document(chat_id="353572645", document=file_content)
-    await dp.bot.send_document(chat_id="465443468", document=file_content)
-    await dp.bot.send_document(chat_id="1827964433", document=response.document.file_id)
-    await dp.bot.send_document(chat_id="1827964433", document=response1.document.file_id)
+    file_content = types.InputFile(await get_file_path(name=f"qabul.xlsx"))
+    res_file = await dp.bot.send_document(chat_id=ADMINS, document=file_content)
+    await dp.bot.send_document(chat_id=ADMIN_M1, document=res_file.document.file_id)
+    await dp.bot.send_document(chat_id=ADMIN_M2, document=res_file.document.file_id)
 
-    await dp.bot.send_document(chat_id="353572645", document=response.document.file_id)
-    await dp.bot.send_document(chat_id="353572645", document=response1.document.file_id)
+    await dp.bot.send_document(chat_id=ADMIN_M1, document=response.document.file_id)
+    await dp.bot.send_document(chat_id=ADMIN_M1, document=response1.document.file_id)
 
-    await dp.bot.send_document(chat_id="465443468", document=response.document.file_id)
-    await dp.bot.send_document(chat_id="465443468", document=response1.document.file_id)
+    await dp.bot.send_document(chat_id=ADMIN_M2, document=response.document.file_id)
+    await dp.bot.send_document(chat_id=ADMIN_M2, document=response1.document.file_id)
+
+    await dp.bot.send_document(chat_id=ADMINS, document=response.document.file_id)
+    await dp.bot.send_document(chat_id=ADMINS, document=response1.document.file_id)
+
+    await dp.bot.send_message(chat_id=ADMIN_M1, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
+    await dp.bot.send_message(chat_id=ADMIN_M2, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
+    await dp.bot.send_message(chat_id=ADMINS, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
