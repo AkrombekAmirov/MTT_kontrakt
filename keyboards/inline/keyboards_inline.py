@@ -48,26 +48,19 @@ choose_visitor = InlineKeyboardMarkup(inline_keyboard=[
 yonalish_nomi_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti tarbiyachisi", callback_data="faculty0"),
+            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti tarbiyachisi 864 soatlik kurs",
+                                 callback_data="faculty0"),
         ],
         [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti psixologi", callback_data="faculty1"),
+            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti tarbiyachisi 576 soatlik kurs",
+                                 callback_data="faculty1"),
         ],
         [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti direktori", callback_data="faculty2"),
+            InlineKeyboardButton(text="Defektologiya (logopediya)", callback_data="faculty2"),
         ],
         [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti metodisti", callback_data="faculty3"),
+            InlineKeyboardButton(text="Amaliy psixologiya", callback_data="faculty3"),
         ],
-        [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti defektologi/logopedi", callback_data="faculty4"),
-        ],
-        [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti musiqa rahbari", callback_data="faculty5"),
-        ],
-        [
-            InlineKeyboardButton(text="Maktabgacha ta’lim tashkiloti oshpazi", callback_data="faculty6"),
-        ]
     ])
 
 response_keyboard = InlineKeyboardMarkup(inline_keyboard=[

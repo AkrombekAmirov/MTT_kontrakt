@@ -1,6 +1,7 @@
 from keyboards.inline import keyboard, yonalish_nomi_keyboard, response_keyboard, uzbekistan_viloyatlar, choose_visitor, \
     choose_contract_, seria_keyboard, number_keyboard, list_regioin, list_tuman, list_region1
 from file_service.file_read import process_document, process_contract, func_qrcode, write_qabul
+from file_service.file_database.file_path import get_file_database_path
 from data.config import ADMINS, ADMIN_M1, ADMIN_M2
 from file_service.file_path import get_file_path
 from keyboards.inline import inline_tumanlar
@@ -17,10 +18,8 @@ import re
 logging.basicConfig(filename='bot.log', filemode='w', level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-list_ = ["Maktabgacha ta’lim tashkiloti tarbiyachisi", "Maktabgacha ta’lim tashkiloti psixologi",
-         "Maktabgacha ta’lim tashkiloti direktori", "Maktabgacha ta’lim tashkiloti metodisti",
-         "Maktabgacha ta’lim tashkiloti defektologi/logopedi", "Maktabgacha ta’lim tashkiloti musiqa rahbari",
-         "Maktabgacha ta’lim tashkiloti oshpazi"]
+list_ = ["Maktabgacha ta’lim tashkiloti tarbiyachisi", "Maktabgacha ta’lim tashkiloti tarbiyachisi",
+         "Defektologiya (logopediya)", "Amaliy psixologiya"]
 
 
 @dp.message_handler(commands=['start'])
@@ -127,8 +126,7 @@ async def answer_tuman(call: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query_handler(
-    lambda call: call.data in ["faculty0", "faculty1", "faculty2", "faculty3", "faculty4", "faculty5", "faculty6"],
-    state=Learning.six)
+    lambda call: call.data in ["faculty0", "faculty1", "faculty2", "faculty3"], state=Learning.six)
 async def answer_five(call: types.CallbackQuery, state: FSMContext):
     logging.info(f"{call.from_user.id} {call.message.from_user.full_name} {call.data}")
     await state.update_data({"yonalish": call.data})
@@ -143,10 +141,12 @@ async def answer_five(call: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(state=Learning.seven)
 async def answer_regitration(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
     if call.data == "yes":
         await call.message.answer("✅ Ma'lumotlaringiz muvaffaqiyatli qabul qilindi.\n")
         response = await call.message.answer_document(
-            types.InputFile(await get_file_path(name="shartnoma_.pdf")),
+            types.InputFile(await get_file_path(
+                name="shartnoma_shablon1.pdf" if data.get('yonalish') == "faculty0" else "shartnoma_shablon2.pdf")),
             caption="Shartnoma bilan tanishib chiqing!!!")
         await call.message.answer(
             "Malaka oshirish kurslarida o'qish uchun yuqoridagi shartnoma bilan tanishib chiqing va shartnoma qoidalari sizni qanoatlantirsa quyidagi tugmani bosing va ariza qoldiring!!!",
@@ -203,19 +203,24 @@ async def answer_passport_seria(message: types.Message, state: FSMContext):
 
 
 async def create_func(data, message):
+    print("++++++++", faculty_file_map.get(data.get('yonalish')))
     uuid_id = str(uuid4())
     ariza_id = str(uuid4())
     contract_number = get_max_contract_number()
-    data2 = [[data.get('Name'), data.get('passport'), contract_number, data.get('region'), data.get('tuman'),
-              list_[int(data.get('yonalish')[7])], data.get('Contact'), datetime.now().strftime("%d-%m-%Y")]]
+    faculty_name = "864 soatlik" if data.get('yonalish') == "faculty0" else "576 soatlik"
+    data2 = [[data.get('Name'), f"{list_[int(data.get('yonalish')[7])]} {faculty_name}", data.get('passport'),
+              contract_number,
+              data.get('region'), data.get('tuman'), data.get('Contact'), datetime.now().strftime("%d-%m-%Y")]]
     await write_qabul(data=data2)
     await func_qrcode(url=uuid_id, name=f"{data.get('Name')}", status=True)
     await func_qrcode(url=ariza_id, name=f"{data.get('Name')}")
-    await process_document(f"{data.get('region')} {data.get('tuman')}da", f"{data.get('Name')}")
+    await process_document(f"{data.get('region')} {data.get('tuman')}da", f"{data.get('Name')}",
+                           file_name=await get_file_database_path(name=faculty_file_map.get(data.get('yonalish'))))
     await process_contract(name=f"{data.get('Name')}", faculty=f"{list_[int(data.get('yonalish')[7])]}",
                            passport=f"{data.get('passport')}", number=f"{data.get('Contact')}",
                            address=f"{data.get('region')} {data.get('tuman')}",
-                           contract_number=contract_number)
+                           contract_number=contract_number,
+                           file_name=await get_file_database_path(name=faculty_file_map1.get(data.get('yonalish'))))
     response1 = await message.answer_document(
         types.InputFile(await get_file_path(name=f"file_ariza\\{data.get('Name')}.pdf")), caption="Sizning arizangiz")
     response = await message.answer_document(
@@ -226,7 +231,8 @@ async def create_func(data, message):
                      telegram_file_id=str(response.document.file_id), telegram_ariza_id=str(response1.document.file_id),
                      telegram_name=message.from_user.full_name,
                      username=message.from_user.username if message.from_user.username else "None", ariza_id=ariza_id,
-                     file_id=uuid_id, faculty=list_[int(data.get("yonalish")[7])], group="001",
+                     file_id=uuid_id, faculty=list_[int(data.get("yonalish")[7])],
+                     group=group_name_map.get(data.get("yonalish")),
                      created_date=datetime.now().strftime("%Y-%m-%d"), created_time=datetime.now().strftime("%H:%M:%S"))
     with open(await get_file_path(name=f"file_shartnoma\\{data.get('Name')}.pdf"), "rb") as file:
         await file_create_(user_id=[f"{data.get('passport')}", uuid_id, contract_number],
@@ -234,7 +240,7 @@ async def create_func(data, message):
     with open(await get_file_path(name=f"file_ariza\\{data.get('Name')}.pdf"), "rb") as file:
         await file_create_(user_id=[f"{data.get('passport')}", ariza_id, contract_number],
                            images=[(file, "application/pdf")])
-    file_content = types.InputFile(await get_file_path(name=f"qabul.xlsx"))
+    file_content = types.InputFile(await get_file_database_path(name=f"qabul.xlsx"))
     res_file = await dp.bot.send_document(chat_id=ADMINS, document=file_content)
     await dp.bot.send_document(chat_id=ADMIN_M1, document=res_file.document.file_id)
     await dp.bot.send_document(chat_id=ADMIN_M2, document=res_file.document.file_id)
@@ -248,6 +254,29 @@ async def create_func(data, message):
     await dp.bot.send_document(chat_id=ADMINS, document=response.document.file_id)
     await dp.bot.send_document(chat_id=ADMINS, document=response1.document.file_id)
 
-    await dp.bot.send_message(chat_id=ADMIN_M1, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
-    await dp.bot.send_message(chat_id=ADMIN_M2, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
-    await dp.bot.send_message(chat_id=ADMINS, text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYumalish: {list_[int(data.get('yonalish')[7])]}")
+    await dp.bot.send_message(chat_id=ADMIN_M1,
+                              text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+    await dp.bot.send_message(chat_id=ADMIN_M2,
+                              text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+    await dp.bot.send_message(chat_id=ADMINS,
+                              text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+
+
+faculty_file_map = {
+    "faculty0": "ariza_mttt.docx",
+    "faculty1": "ariza_576.docx",
+    "faculty2": "ariza_df.docx",
+    "faculty3": "ariza_ps.docx"
+}
+faculty_file_map1 = {
+    "faculty0": "shartnoma_shablon.docx",
+    "faculty1": "shartnoma_shablon_576.docx",
+    "faculty2": "shartnoma_shablon_576.docx",
+    "faculty3": "shartnoma_shablon_576.docx"
+}
+group_name_map = {
+    "faculty0": "001",
+    "faculty1": "002",
+    "faculty2": "003",
+    "faculty3": "004"
+}

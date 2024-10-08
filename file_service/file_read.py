@@ -47,8 +47,8 @@ async def replace_table_text(table, old_text, new_text, font_size=None, bold=Tru
                             run.font.bold = True
 
 
-async def process_document(address, name):
-    doc = Document(join(dirname(__file__), "ariza.docx"))
+async def process_document(address, name, file_name):
+    doc = Document(join(dirname(__file__), str(file_name)))
     for paragraph in doc.paragraphs:
         if "ADDRESS" in paragraph.text:
             await replace_text(paragraph, "ADDRESS", address)
@@ -62,8 +62,8 @@ async def process_document(address, name):
     await convert_pdf(name=name, status=True)
 
 
-async def process_contract(name, faculty, passport, number, address, contract_number):
-    doc = Document(join(dirname(__file__), 'shartnoma_shablon.docx'))
+async def process_contract(name, faculty, passport, number, address, contract_number, file_name):
+    doc = Document(join(dirname(__file__), str(file_name)))
     for paragraph in doc.paragraphs:
         if "SONLI1" in paragraph.text:
             await replace_text(paragraph, "SONLI1", contract_number)
@@ -115,7 +115,7 @@ async def convert_pdf(name, status: bool = False):
 
 async def write_qabul(data):
     try:
-        path = await get_file_path("qabul.xlsx")
+        path = await get_file_path("file_database\\qabul.xlsx")
         workbook = load_workbook(path)
         sheet = workbook.active
         for row in data:

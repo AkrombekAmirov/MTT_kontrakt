@@ -98,6 +98,18 @@ def get_user_info(passport: str):
         session.close()
 
 
+def check_user(user_id: int):
+    session = sessionmaker(bind=engine)()
+    try:
+        result = session.query(User).filter_by(telegram_id=user_id).first()
+        session.close()
+        return result
+    except Exception as e:
+        return e
+    finally:
+        session.close()
+
+
 def get_max_contract_number():
     session = sessionmaker(bind=engine)()
     try:
