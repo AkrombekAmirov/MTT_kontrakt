@@ -45,6 +45,12 @@ choose_visitor = InlineKeyboardMarkup(inline_keyboard=[
     ]
 ])
 
+admin_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="❌ O'chirish", callback_data="delete_user"),
+    ]
+])
+
 yonalish_nomi_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -99,6 +105,18 @@ choose_language = InlineKeyboardMarkup(inline_keyboard=[
     ],
     [
         InlineKeyboardButton(text="🇷🇺 Rus tili", callback_data="Rus tili"),
+    ]
+])
+
+admin_response = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="✅ XA", callback_data="admin_yes"),
+    ],
+    [
+        InlineKeyboardButton(text="❌ YO'Q", callback_data="admin_no"),
+    ],
+    [
+
     ]
 ])
 

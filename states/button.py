@@ -13,3 +13,9 @@ class Learning(StatesGroup):
     eight = State()
     nine = State()
     ten = State()
+
+class Adminic(StatesGroup):
+    zero = State()
+    one = State()
+    two = State()
+    three = State()

@@ -132,9 +132,10 @@ async def answer_five(call: types.CallbackQuery, state: FSMContext):
     await state.update_data({"yonalish": call.data})
     await call.message.delete()
     data = await state.get_data()
+    faculty_name = "864 soatlik" if data.get('yonalish') == "faculty0" else "576 soatlik"
     data1 = (
         f"Quyidagi kiritgan ma'lumotlaringiz to'g'ri ekanligini tasdiqlaysizmi?\nF. I. SH: {data.get('Name')}\nPassport: <b>{data.get('passport')}</b>\nViloyat: {data.get('region')}\nTuman: "
-        f"{data.get('tuman')}\nYonalish: {list_[int(data.get('yonalish')[7])]}")
+        f"{data.get('tuman')}\nYonalish: {list_[int(data.get('yonalish')[7])]} <b>{faculty_name}</b> ✅")
     await call.message.answer(text=data1, reply_markup=response_keyboard)
     await Learning.next()
 
