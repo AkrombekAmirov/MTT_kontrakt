@@ -12,6 +12,7 @@ async def adminic(call: types.CallbackQuery):
 
 @dp.message_handler(types.Message)
 async def adminic(message: types.Message, state: FSMContext):
+    await state.update_data({"passport": message.text})
     if not get_user_passport_id(message.text):
         await message.answer("Bunday foydalanuvchi topilmadi!", reply_markup=admin_keyboard)
     elif get_user_passport_id(message.text):
@@ -26,7 +27,8 @@ async def adminic(message: types.Message, state: FSMContext):
 @dp.callback_query_handler(lambda call: call.data in ["admin_yes", "admin_no"])
 async def adminic(call: types.CallbackQuery, state: FSMContext):
     if call.data == "admin_yes":
-        delete_user(call.from_user.id)
+        data = await state.get_data()
+        delete_user(data.get("passport"))
         await call.message.answer("Foydalanuvchi o'chirildi!", reply_markup=admin_keyboard)
     elif call.data == "admin_no":
         await call.message.answer("Foydalanuvchi o'chirilmadi!", reply_markup=admin_keyboard)
