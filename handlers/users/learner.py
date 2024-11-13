@@ -21,6 +21,9 @@ logging.basicConfig(filename='bot.log', filemode='w', level=logging.DEBUG,
 list_ = ["Maktabgacha ta’lim tashkiloti tarbiyachisi", "Maktabgacha ta’lim tashkiloti tarbiyachisi",
          "Defektologiya (logopediya)", "Amaliy psixologiya"]
 
+async def validate_phone_number(phone_number: str) -> bool:
+    """Telefon raqamni tekshirish: +998XXXXXXXXX formatida bo'lishi kerak."""
+    return re.fullmatch(r'^\+998\d{9}$', phone_number) is not None
 
 @dp.message_handler(commands=['start'])
 async def exit_system(message: types.Message, state: FSMContext):
@@ -43,11 +46,37 @@ async def answer_contact(message: types.Message, state: FSMContext):
     elif message.contact:
         logging.info(f"{message.from_user.id} {message.from_user.full_name} {message.contact.phone_number}")
         await state.update_data({"Contact": message.contact.phone_number})
-        await message.answer("Familiya, Ism va Sharifingizni kiriting.")
-        await Learning.next()
+        await message.answer("Siz bilan bog'lanish uchun foal holatdagi raqamingizni kiriting!")
+        await Learning.one_.set()
     else:
         await message.answer("Iltimos telegram kontaktingizni yuboring!")
         await Learning.zero.set()
+
+
+@dp.message_handler(content_types=types.ContentTypes.TEXT, state=Learning.one_)
+async def answer_contact(message: types.Message, state: FSMContext):
+    phone_number = message.text.strip()
+
+    if message.text == '/start':
+        await exit_system(message, state)
+        return
+
+    logging.info(f"{message.from_user.id} {message.from_user.full_name} {phone_number}")
+
+    if phone_number == '+998901234567':
+        await message.answer(
+            "Iltimos, o'zingizning shaxsiy faol telefon raqamingizni kiriting. Siz bilan bog'lanish uchun kerak!")
+        return  # Bu yerda yangi davlat holatini o'rnatish kerak emas
+
+    if await validate_phone_number(phone_number):
+        await state.update_data({"number_": phone_number})
+        await message.answer("Familiya, Ism va Sharifingizni lotin alifbosida kiriting!")
+        await Learning.next()
+    else:
+        await message.answer("Siz ma'lumot kiritishda xatolikga yo'l qo'ydingiz!\n"
+                             "Iltimos, qaytadan urinib ko'ring.\n"
+                             "Namuna: +998901234567")
+        await Learning.one_.set()
 
 
 @dp.message_handler(content_types=types.ContentTypes.TEXT, state=Learning.one)
@@ -211,7 +240,7 @@ async def create_func(data, message):
     faculty_name = "864 soatlik" if data.get('yonalish') == "faculty0" else "576 soatlik"
     data2 = [[data.get('Name'), f"{list_[int(data.get('yonalish')[7])]} {faculty_name}", data.get('passport'),
               contract_number,
-              data.get('region'), data.get('tuman'), data.get('Contact'), datetime.now().strftime("%d-%m-%Y")]]
+              data.get('region'), data.get('tuman'), data.get('Contact'), datetime.now().strftime("%d-%m-%Y"), data.get('number_')]]
     await write_qabul(data=data2)
     await func_qrcode(url=uuid_id, name=f"{data.get('Name')}", status=True)
     await func_qrcode(url=ariza_id, name=f"{data.get('Name')}")
@@ -256,11 +285,11 @@ async def create_func(data, message):
     await dp.bot.send_document(chat_id=ADMINS, document=response1.document.file_id)
 
     await dp.bot.send_message(chat_id=ADMIN_M1,
-                              text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+                              text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
     await dp.bot.send_message(chat_id=ADMIN_M2,
-                              text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+                              text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
     await dp.bot.send_message(chat_id=ADMINS,
-                              text=f"F. I. Sh: {data.get('Name')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+                              text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
 
 
 faculty_file_map = {

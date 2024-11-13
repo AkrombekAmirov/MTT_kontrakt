@@ -3,6 +3,7 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 class Learning(StatesGroup):
     zero = State()
+    one_ = State()
     one = State()
     two = State()
     three = State()
