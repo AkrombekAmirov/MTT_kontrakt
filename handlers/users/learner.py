@@ -220,7 +220,7 @@ async def answer_passport_seria(message: types.Message, state: FSMContext):
             await message.answer("Shartnoma rasmiylashtirilmoqda. Biroz kuting.")
             await create_func(data, message)
             await message.answer(
-                "✅ Shartnoma muvaffaqiyatli rasmiylashtirildi. Sizni ushbu kursda ko'rganimizdan mamnunmiz!!! Guruh shaklanishi bilan sizga ushbu bot orqali guruh linki yuboriladi.",
+                "✅ Shartnoma muvaffaqiyatli rasmiylashtirildi. Sizni ushbu kursda ko'rganimizdan mamnunmiz!!! Iltimos qabul bo'yicha ma'lumot olish uchun quyidagi telefon raqamlarga murojat qiling: 90-046-19-26 Barchinoy, 90-906-30-20  Feruza",
                 reply_markup=choose_visitor)
             await state.reset_state(with_data=True)
         else:
