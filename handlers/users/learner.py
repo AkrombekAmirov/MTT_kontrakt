@@ -150,7 +150,7 @@ async def answer_tuman(call: types.CallbackQuery, state: FSMContext):
     logging.info(f"{call.from_user.id} {call.message.from_user.full_name} {call.data}")
     await call.message.delete()
     await state.update_data({"tuman": call.data})
-    await call.message.answer("Malaka oshirish kurslari yo'nalishini tanlang.", reply_markup=yonalish_nomi_keyboard)
+    await call.message.answer("O'quv kursi yo'nalishini tanlang", reply_markup=yonalish_nomi_keyboard)
     await Learning.next()
 
 
