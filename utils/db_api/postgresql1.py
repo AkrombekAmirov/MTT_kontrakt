@@ -98,6 +98,18 @@ def get_user_info(passport: str):
         session.close()
 
 
+def check_user(user_id: int):
+    session = sessionmaker(bind=engine)()
+    try:
+        result = session.query(User).filter_by(telegram_id=user_id).first()
+        session.close()
+        return result
+    except Exception as e:
+        return e
+    finally:
+        session.close()
+
+
 def get_max_contract_number():
     session = sessionmaker(bind=engine)()
     try:
@@ -148,6 +160,29 @@ def get_file_(file_uuid: str):
     session = sessionmaker(bind=engine)()
     try:
         result = session.query(FileRepository).filter_by(file_id=file_uuid).first()
+        session.close()
+        return result
+    except Exception as e:
+        return e
+    finally:
+        session.close()
+
+def delete_user(passport_id: str):
+    session = sessionmaker(bind=engine)()
+    try:
+        result = session.query(User).filter_by(passport=passport_id).delete()
+        session.commit()
+        session.close()
+        return result
+    except Exception as e:
+        return e
+    finally:
+        session.close()
+
+def get_user_passport_id(passport_id: str):
+    session = sessionmaker(bind=engine)()
+    try:
+        result = session.query(User).filter_by(passport=passport_id).first()
         session.close()
         return result
     except Exception as e:
