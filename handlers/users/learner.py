@@ -46,7 +46,7 @@ async def answer_contact(message: types.Message, state: FSMContext):
     elif message.contact:
         logging.info(f"{message.from_user.id} {message.from_user.full_name} {message.contact.phone_number}")
         await state.update_data({"Contact": message.contact.phone_number})
-        await message.answer("Siz bilan bog'lanish uchun foal holatdagi raqamingizni kiriting!")
+        await message.answer("Siz bilan bog'lanish uchun foal holatdagi raqamingizni kiriting!\nNamuna: <b>+998901234567</b>")
         await Learning.one_.set()
     else:
         await message.answer("Iltimos telegram kontaktingizni yuboring!")
