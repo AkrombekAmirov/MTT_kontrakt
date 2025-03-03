@@ -273,21 +273,21 @@ async def create_func(data, message):
     file_content = types.InputFile(await get_file_database_path(name=f"qabul.xlsx"))
     res_file = await dp.bot.send_document(chat_id=ADMINS, document=file_content)
     await dp.bot.send_document(chat_id=ADMIN_M1, document=res_file.document.file_id)
-    await dp.bot.send_document(chat_id=ADMIN_M2, document=res_file.document.file_id)
+    # await dp.bot.send_document(chat_id=ADMIN_M2, document=res_file.document.file_id)
 
     await dp.bot.send_document(chat_id=ADMIN_M1, document=response.document.file_id)
     await dp.bot.send_document(chat_id=ADMIN_M1, document=response1.document.file_id)
 
-    await dp.bot.send_document(chat_id=ADMIN_M2, document=response.document.file_id)
-    await dp.bot.send_document(chat_id=ADMIN_M2, document=response1.document.file_id)
+    # await dp.bot.send_document(chat_id=ADMIN_M2, document=response.document.file_id)
+    # await dp.bot.send_document(chat_id=ADMIN_M2, document=response1.document.file_id)
 
     await dp.bot.send_document(chat_id=ADMINS, document=response.document.file_id)
     await dp.bot.send_document(chat_id=ADMINS, document=response1.document.file_id)
 
     await dp.bot.send_message(chat_id=ADMIN_M1,
                               text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
-    await dp.bot.send_message(chat_id=ADMIN_M2,
-                              text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
+    # await dp.bot.send_message(chat_id=ADMIN_M2,
+    #                           text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
     await dp.bot.send_message(chat_id=ADMINS,
                               text=f"F. I. Sh: {data.get('Name')}\nRaqami: {data.get('number_')}\nContract number: {contract_number}\nYunalish: {list_[int(data.get('yonalish')[7])]} {faculty_name}")
 

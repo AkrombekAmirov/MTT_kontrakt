@@ -6,7 +6,8 @@ __pycache__/
 end
 id_rsa1
 id_rsa1.pub
-
+alembic.ini
+alembic
 # C extensions
 *.so
 
